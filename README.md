@@ -13,7 +13,7 @@ Algoritma decrease and conquer memiliki tiga varian, salah satunya decrease by c
 2. Identifikasi simpul pada graf yang memiliki derajat masuk = 0, dalam kasus mata kuliah, artinya mata kuliah tersebut tidak memiliki prasyarat.
 3. Kemudian, hapus simpul tersebut pada graf dan sisi yang keluar dari simpul tersebut. Dalam kasus ini, misalkan simpul mata kuliah A berderajat masuk 0, maka simpul A akan dihapus dari graf dan seluruh mata kuliah yang tadinya memiliki prasyarat A sekarang tidak memiliki prasyarat A. Dengan demikian ukuran graph berkurang satu.
 4. Periksa apakah mata kuliah dapat dimasukkan kedalam satu semester dengan cara memeriksa apakah simpul yang akan dimasukkan ke dalam himpunan solusi memiliki prasyarat berupa mata kuliah yang dihapus pada satu iterasi tepat sebelumnya. Jika ya, maka mata kuliah tersebut tidak dapat ditempatkan pada satu semester yang sama dengan prasyaratnya.
-4. Ulangi langkah 1-2 untuk menemukan urutan mata kuliah.
+4. Ulangi langkah 2-4 untuk menemukan urutan mata kuliah per semesternya.
 
 ## System requirements
 Make sure you have python installed in your device. Download python **[here](https://www.python.org/downloads/)**.
