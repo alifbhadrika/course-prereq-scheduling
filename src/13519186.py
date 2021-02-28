@@ -1,20 +1,28 @@
-# February 27 2021, Alif Bhadrika Parikesit
+'''
+February 27 2021, Alif Bhadrika Parikesit
+Revisi 1
+'''
 
-def createGraphfromFile():
+def createGraphfromFile(inputFile):
     '''
     createGraphfromfile adalahh fungsi parse file kemudian
     merepresentasikan data mata kuliah dari file sebagai
     graf dengan berarah dengan struktur adjacency list
     '''
 
-    inputFile = input("ENTER inputFilename.txt: ")
-    print()
     with open('../test/'+inputFile,'r') as file:
         graph = {}
         for line in file:
             line = (line.replace(',','').rstrip('.\n')).split()
             graph[line[0]] = (line[1:])
     return graph
+
+def inDeg(graph):
+    vertex = list(graph.keys())
+    inDegree = dict.fromkeys(vertex,0)
+    for v in vertex:
+        inDegree[v] = len(graph[v])
+    return inDegree
 
 def getStudyPlan(graph, sorted_course, course_per_semester):
     '''
@@ -23,40 +31,36 @@ def getStudyPlan(graph, sorted_course, course_per_semester):
     atau tidak
     '''
 
-    vertex = list(graph.keys())             #list simpul graf
-    inDegree = dict.fromkeys(vertex,0)      #dict derajat masuk simpul
     smt = 1
-    forbidden_course = []                   #course yang memiliki prasyarat course v
+    same_semester = []              # list course pada satu semester
     while len(graph) != 0:
+        vertex = list(graph.keys()) # list simpul graf
+        inDegree = inDeg(graph)     # dict derajat masuk tiap simpul graf
+        same_semester.clear()
         for v in vertex:
-            inDegree[v] = len(graph[v])
             if inDegree[v] == 0:
-                vertex.remove(v)
                 sorted_course.append(v)
 
-                #cek apakah matkul yang baru masuk sorted_course tidak memiliki prasyarat v
-                #apabila iya, maka pisah kedua course tersebut
-                #apabila tidak, maka satukan keduanya pada satu semester yang sama
-                if v not in forbidden_course:
-                    if smt in course_per_semester.keys():
-                        course_per_semester[smt].append(v)
-                    else:
-                        course_per_semester[smt] = [v]
+                # seleksi apakah boleh matkul v pada semester smt
+                # jika sudah ada 1 atau lebih matkul pada semester smt
+                # maka v ditempatkan pada semester yang sama
+                if len(same_semester) != 0:
+                    course_per_semester[smt].append(v)
                 else:
-                    smt += 1
                     course_per_semester[smt] = [v]
 
-                forbidden_course.clear()
-                
                 #penghapusan sisi keluar dari simpul yang berderajat 0   
                 for course,neighbors in graph.items():
                     for neighbor in neighbors:
                         if v == neighbor:
-                            forbidden_course.append(course)
                             neighbors.remove(neighbor)
 
-                #penghapusan simpul berderajat masuk 0         
+                #penghapusan simpul berderajat masuk 0
                 graph.pop(v, None)
+
+                #penambahan v pada semester smt
+                same_semester.append(v)               
+        smt += 1
     return
 
 def print_solution(course_per_semester):
@@ -72,9 +76,12 @@ def print_solution(course_per_semester):
         print()
 
 if __name__ == '__main__':
+    inputFile = input("ENTER inputFilename.txt: ")
+    print()
+
     sorted_course = []
     course_per_semester = {}
-    course_graph = createGraphfromFile()
+    course_graph = createGraphfromFile(inputFile)
     getStudyPlan(course_graph,sorted_course,course_per_semester)
     print("==== Sorted Courses List =====")
     print(sorted_course)
